@@ -1,0 +1,12 @@
+apiVersion: 1
+datasources:
+  - name: InfluxDB_JMeter
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    jsonData:
+      version: Flux
+      organization: my-org
+      defaultBucket: jmeter_results
+    secureJsonData:
+      token: my-super-secret-token-123
