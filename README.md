@@ -9,7 +9,7 @@ This repository contains a fully automated, containerized performance monitoring
 
 ## 📂 Project Structure
 
-Ensure your project folder is organized exactly as follows:
+Ensure your project folder is organized exactly as follows. If these folders do not exist, create them manually:
 
 ```text
 .
@@ -56,7 +56,7 @@ Open your `.jmx` file and locate the **Backend Listener**. Use these exact setti
 * **influxdbToken:** `my-super-secret-token-123`
 * **application:** `my_app` (Must match the filter at the top of your Grafana dashboard)
 
-> **Note:** Use the hostname `influxdb` inside the JMX because JMeter is running inside the Docker network.
+> **Note:** Use the hostname `influxdb` inside the JMX because JMeter is running inside the same Docker network.
 
 ### 2. Execute the Test
 
@@ -73,7 +73,7 @@ docker exec -it jmeter jmeter -n -t /scripts/your_test.jmx -l /results/run1.jtl
 
 If your test is running and you need to stop it, try these methods in order:
 
-### Method 1: Graceful Shutdown (Preferred)
+### Method 1: Graceful Shutdown
 
 Tells JMeter to stop starting new threads and finish active samples.
 
@@ -82,7 +82,7 @@ docker exec -it jmeter /opt/apache-jmeter/bin/shutdown.sh
 
 ```
 
-### Method 2: Immediate Stop (Alternative)
+### Method 2: Immediate Stop
 
 If Method 1 doesn't work, this forces an immediate halt of the engine.
 
@@ -91,21 +91,23 @@ docker exec -it jmeter /opt/apache-jmeter/bin/stoptest.sh
 
 ```
 
-### Method 3: Process Kill (The "Hard" Stop)
+### Method 3: Docker Stop (The "Service" Stop)
 
-If the container scripts are unresponsive, kill the Java process directly:
+If the internal scripts fail, you can stop the JMeter container service entirely.
 
 ```bash
-docker exec -it jmeter pkill -9 java
+docker-compose stop jmeter
 
 ```
 
-### Method 4: Service Restart
+*To use the container again after this, run `docker-compose start jmeter`.*
 
-As a last resort, restart the entire JMeter container to clear the memory:
+### Method 4: Force Kill
+
+If the container is completely frozen, kill the Java process directly:
 
 ```bash
-docker-compose restart jmeter
+docker exec -it jmeter pkill -9 java
 
 ```
 
